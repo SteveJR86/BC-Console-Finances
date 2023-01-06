@@ -86,3 +86,79 @@ var finances = [
 ['Jan-2017', 138230],
 ['Feb-2017', 671099]
 ];
+
+// calculate number of months
+let noMonths = finances.length;
+
+// add up total amounts of profit/loss in finances array
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce#examples
+function sumArray(accumulator, currentValue){
+  // function to sum second element of each element in a 2d array to be used in a reduce function
+  return accumulator + currentValue[1];
+}
+
+let total = finances.reduce(sumArray, 0);
+
+// create an array of the change between one month and the next for all months
+function calculateChange(currentItem, index, allItems){
+  // function to be used in a map function to work out change between current item and previous item
+  // unless this is the first item in the array then it returns the full value assuming the change for
+  // first month is the value of the first month
+  if(index===0) {
+    return [currentItem[0], currentItem[1]];
+  } else {
+    return [currentItem[0], (currentItem[1] - allItems[index-1][1])];
+  }
+}
+
+let changes = finances.map(calculateChange);
+
+// calculate average of changes from month to month assuming first month change is 0.
+let totalChanges = changes.reduce(sumArray, 0);
+
+let averageChange = totalChanges / noMonths;
+
+// calculate max change
+function compareValuesMax(answer, currentValue){
+  // function to use in reduce to compare values held in second element
+  // of each element of a 2d array and return the maximum element as answer
+  if(currentValue[1] > answer[1]){
+    return currentValue;
+  } else {
+    return answer;
+  }
+}
+
+let maxChange = changes.reduce(compareValuesMax);
+
+// calculate min change
+function compareValuesMin(answer, currentValue){
+  // function to use in reduce to compare values held in second element
+  // of each element of a 2d array and return the minimum element as answer
+  if(currentValue[1] < answer[1]){
+    return currentValue;
+  } else {
+    return answer;
+  }
+}
+
+let minChange = changes.reduce(compareValuesMin);
+
+// display outputs by logging to the console
+// Example Output
+// Financial Analysis
+// ----------------------------
+// Total Months: 25
+// Total: $2561231
+// Average  Change: $-2315.12
+// Greatest Increase in Profits: Feb-2012 ($1926159)
+// Greatest Decrease in Profits: Sep-2013 ($-2196167)
+
+console.log("Financial Analysis");
+console.log("---------------------");
+console.log("Total Months:", noMonths);
+console.log("Total: $" + total);
+console.log("Average Change: $" + averageChange.toFixed(2));
+console.log("Greatest Increase in Profits: " + maxChange[0] + " ($" + maxChange[1] + ")");
+console.log("Greatest Decrease in Profits: " + minChange[0] + " ($" + minChange[1] + ")");
