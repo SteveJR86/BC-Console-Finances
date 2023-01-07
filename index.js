@@ -91,41 +91,33 @@ var finances = [
 let noMonths = finances.length;
 
 // add up total amounts of profit/loss in finances array
-let total=0;
-for(let i=0; i<finances.length; i++){
-  total += finances[i][1];
-}
 // create an array of the change between one month and the next for all months
 // assumed change for first month is 0
+let total=0;
 let changes = [];
+let totalChange = 0;
 for(let i=0; i<finances.length; i++){
   let changeThisMonth;
+  total += finances[i][1];
   if(i!=0){
     changeThisMonth = finances[i][1] - finances[i-1][1];
   } else {
     changeThisMonth = 0;
   }
   changes.push([finances[i][0], changeThisMonth]);
+  // calculate total change to later work out average
+  totalChange += changeThisMonth;
 }
-
 // calculate average of changes from month to month.
-let totalChange = 0;
-for(let i=0; i<changes.length; i++){
-  totalChange += changes[i][1];
-}
 let averageChange = totalChange / noMonths;
 
-// calculate max change
+// calculate max & min change
 let maxChange = ["month", -Infinity];
+let minChange = ["month", Infinity];
 for(let i=0; i<changes.length; i++){
   if(changes[i][1] > maxChange[1]){
     maxChange = changes[i];
   }
-}
-
-// calculate min change
-let minChange = ["month", Infinity];
-for(let i=0; i<changes.length; i++){
   if(changes[i][1] < minChange[1]){
     minChange = changes[i];
   }
