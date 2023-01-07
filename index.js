@@ -91,59 +91,45 @@ var finances = [
 let noMonths = finances.length;
 
 // add up total amounts of profit/loss in finances array
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce#examples
-function sumArray(accumulator, currentValue){
-  // function to sum second element of each element in a 2d array to be used in a reduce function
-  return accumulator + currentValue[1];
+let total=0;
+for(let i=0; i<finances.length; i++){
+  total += finances[i][1];
 }
-
-let total = finances.reduce(sumArray, 0);
-
 // create an array of the change between one month and the next for all months
-function calculateChange(currentItem, index, allItems){
-  // function to be used in a map function to work out change between current item and previous item
-  // unless this is the first item in the array then it returns the full value assuming the change for
-  // first month is the value of the first month
-  if(index===0) {
-    return [currentItem[0], currentItem[1]];
+// assumed change for first month is 0
+let changes = [];
+for(let i=0; i<finances.length; i++){
+  let changeThisMonth;
+  if(i!=0){
+    changeThisMonth = finances[i][1] - finances[i-1][1];
   } else {
-    return [currentItem[0], (currentItem[1] - allItems[index-1][1])];
+    changeThisMonth = 0;
   }
+  changes.push([finances[i][0], changeThisMonth]);
 }
 
-let changes = finances.map(calculateChange);
-
-// calculate average of changes from month to month assuming first month change is 0.
-let totalChanges = changes.reduce(sumArray, 0);
-
-let averageChange = totalChanges / noMonths;
+// calculate average of changes from month to month.
+let totalChange = 0;
+for(let i=0; i<changes.length; i++){
+  totalChange += changes[i][1];
+}
+let averageChange = totalChange / noMonths;
 
 // calculate max change
-function compareValuesMax(answer, currentValue){
-  // function to use in reduce to compare values held in second element
-  // of each element of a 2d array and return the maximum element as answer
-  if(currentValue[1] > answer[1]){
-    return currentValue;
-  } else {
-    return answer;
+let maxChange = ["month", -Infinity];
+for(let i=0; i<changes.length; i++){
+  if(changes[i][1] > maxChange[1]){
+    maxChange = changes[i];
   }
 }
-
-let maxChange = changes.reduce(compareValuesMax);
 
 // calculate min change
-function compareValuesMin(answer, currentValue){
-  // function to use in reduce to compare values held in second element
-  // of each element of a 2d array and return the minimum element as answer
-  if(currentValue[1] < answer[1]){
-    return currentValue;
-  } else {
-    return answer;
+let minChange = ["month", Infinity];
+for(let i=0; i<changes.length; i++){
+  if(changes[i][1] < minChange[1]){
+    minChange = changes[i];
   }
 }
-
-let minChange = changes.reduce(compareValuesMin);
 
 // display outputs by logging to the console
 // Example Output
